@@ -3,6 +3,7 @@ import InfoBoxes from "@/components/InfoBoxes";
 import HomeProperties from "@/components/HomeProperties";
 
 const HomePage = () => {
+  console.log("URI", process.env.MONGODB_URI);
   return (
     <>
       <Hero />
