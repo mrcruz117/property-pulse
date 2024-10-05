@@ -9,7 +9,6 @@ const PropertiesPage = async () => {
   const properties: IProperty[] = (await Property.find(
     {}
   ).lean()) as IProperty[];
-  console.log(properties);
 
   return (
     <section className='px-4 py-6'>
