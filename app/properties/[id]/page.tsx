@@ -1,3 +1,4 @@
+import PropertyDetails from '@/components/PropertyDetails';
 import PropertyHeaderImage from '@/components/PropertyHeaderImage';
 import connectDb from '@/config/database';
 import Property, { type IProperty } from '@/models/Property';
@@ -25,7 +26,7 @@ const PropertyPage = async ({ params }: { params: { id: string } }) => {
       <section className='bg-blue-50'>
         <div className='container m-auto py-10 px-6'>
           <div className='grid grid-cols-1 md:grid-cols-70/30 w-full gap-6'>
-            {'property info'}
+            <PropertyDetails property={property} />
           </div>
         </div>
       </section>
