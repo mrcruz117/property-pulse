@@ -17,6 +17,7 @@ import { BuiltInProviderType } from 'next-auth/providers/index';
 
 const Navbar = () => {
   const { data: session } = useSession();
+  console.log('session', session);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -25,7 +26,6 @@ const Navbar = () => {
     ClientSafeProvider
   > | null>(null);
   const pathname = usePathname();
-
   const setAuthProviders = async () => {
     const res = await getProviders();
     setProviders(res);
