@@ -35,7 +35,6 @@ export const authOptions: AuthOptions = {
       email?: { verificationRequest?: boolean };
       credentials?: Record<string, any>;
     }) {
-      console.log('signIn', { user, account, profile, email, credentials });
       // 1. Connect to the database
       await connectDb();
 
@@ -55,7 +54,6 @@ export const authOptions: AuthOptions = {
     },
 
     async session({ session }: { session: Session }) {
-      console.log('session: ', { session });
       // 1. Get user from the database
       const dbUser = await UserModel.findOne({ email: session.user?.email });
       // 2. Assign the user id to the session
@@ -65,7 +63,6 @@ export const authOptions: AuthOptions = {
         session.user.email = dbUser?.email;
       }
       // 3. Return the session
-      console.log('returning session: ', session);
       return session;
     },
   },
