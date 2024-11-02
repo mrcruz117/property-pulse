@@ -12,6 +12,7 @@ import {
   LiteralUnion,
   useSession,
   signIn,
+  signOut,
 } from 'next-auth/react';
 import { BuiltInProviderType } from 'next-auth/providers/index';
 
@@ -216,6 +217,10 @@ const Navbar = () => {
                       role='menuitem'
                       tabIndex={-1}
                       id='user-menu-item-2'
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        signOut();
+                      }}
                     >
                       Sign Out
                     </button>
