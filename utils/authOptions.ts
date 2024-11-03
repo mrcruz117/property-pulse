@@ -1,10 +1,25 @@
-import { AuthOptions, User, Account, Profile, Session } from 'next-auth';
+import {
+  AuthOptions,
+  User,
+  Account,
+  Profile,
+  Session,
+  DefaultSession,
+} from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import connectDb from '@/config/database';
 import UserModel from '@/models/User';
 
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   throw new Error('Missing Google OAuth environment variables');
+}
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+    } & DefaultSession['user'];
+  }
 }
 
 export const authOptions: AuthOptions = {
@@ -44,6 +59,7 @@ export const authOptions: AuthOptions = {
       // 3. If the user does not exist, create a new user
       if (!userExists) {
         await UserModel.create({
+          // id: user.id,
           email: profile?.email,
           username: profile?.name,
           image: user?.image,
@@ -57,10 +73,12 @@ export const authOptions: AuthOptions = {
       // 1. Get user from the database
       const dbUser = await UserModel.findOne({ email: session.user?.email });
       // 2. Assign the user id to the session
+
       if (session.user) {
         session.user.name = dbUser?.username;
         session.user.image = dbUser?.image;
         session.user.email = dbUser?.email;
+        session.user.id = dbUser?._id.toString();
       }
       // 3. Return the session
       return session;

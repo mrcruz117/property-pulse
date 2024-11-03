@@ -5,12 +5,14 @@ export const getSessionUser = async () => {
   // try {
   const session = await getServerSession(authOptions);
 
+  console.log('session: ', session);
+
   if (!session?.user) {
     return null;
   }
 
   return {
-    // userId: session.user.id || '',
+    userId: session.user.id || '',
     user: session.user,
   };
   // } catch (error) {

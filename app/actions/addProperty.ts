@@ -1,6 +1,10 @@
 'use server';
 
-// import { db } from '@/lib/db';
+import connectDb from '@/config/database';
+import Property from '@/models/Property';
+import { getSessionUser } from '@/utils/getSessionUser';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 type Image = {
   name: string;
@@ -10,6 +14,15 @@ type Image = {
 };
 
 export async function addProperty(formData: FormData) {
+  await connectDb();
+  const sessionUser = await getSessionUser();
+
+  if (!sessionUser) {
+    throw new Error('User not authenticated');
+  }
+
+  const { user } = sessionUser;
+  const userId = user.id;
   const amenities = formData.getAll('amenities');
   const images = formData
     .getAll('images')
@@ -23,6 +36,7 @@ export async function addProperty(formData: FormData) {
       return '';
     });
   const propertyData = {
+    owner: userId,
     type: formData.get('type'),
     name: formData.get('name'),
     description: formData.get('description'),
@@ -47,8 +61,11 @@ export async function addProperty(formData: FormData) {
       phone: formData.get('seller_info.phone'),
     },
     images,
-    // owner: userId,
   };
 
-  console.log('propertyData: ', propertyData);
+  const newProperty = new Property(propertyData);
+  await newProperty.save();
+  console.log('newProperty: ', newProperty);
+  revalidatePath('/', 'layout');
+  redirect(`/properties/${newProperty._id}`);
 }
