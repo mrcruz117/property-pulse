@@ -66,6 +66,7 @@ export async function addProperty(formData: FormData) {
   const newProperty = new Property(propertyData);
   await newProperty.save();
   console.log('newProperty: ', newProperty);
+  console.log('rates: ', newProperty.rates);
   revalidatePath('/', 'layout');
   redirect(`/properties/${newProperty._id}`);
 }

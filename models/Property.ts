@@ -18,7 +18,7 @@ const PropertySchema = new Schema(
     baths: { type: Number, required: true },
     square_feet: { type: Number, required: true },
     amenities: [String],
-    rate: { nightly: Number, weekly: Number, monthly: Number },
+    rates: { nightly: Number, weekly: Number, monthly: Number },
     seller_info: {
       name: String,
       email: String,
@@ -48,11 +48,6 @@ export interface IProperty {
   baths: number;
   square_feet: number;
   amenities: string[];
-  rate: {
-    nightly: number;
-    weekly: number;
-    monthly: number;
-  };
   seller_info: {
     name: string;
     email: string;
