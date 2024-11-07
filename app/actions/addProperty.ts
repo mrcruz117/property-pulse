@@ -5,7 +5,7 @@ import Property from '@/models/Property';
 import { getSessionUser } from '@/utils/getSessionUser';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-
+import cloudinary from '@/config/cloudinary.js';
 type Image = {
   name: string;
   type: string;
@@ -24,17 +24,10 @@ export async function addProperty(formData: FormData) {
   const { user } = sessionUser;
   const userId = user.id;
   const amenities = formData.getAll('amenities');
-  const images = formData
-    .getAll('images')
-    .filter((img: FormDataEntryValue) => {
-      return img instanceof File && img.name !== '';
-    })
-    .map((img: FormDataEntryValue) => {
-      if (img instanceof File) {
-        return img.name;
-      }
-      return '';
-    });
+  const images = formData.getAll('images').filter((img: FormDataEntryValue) => {
+    return img instanceof File && img.name !== '';
+  });
+
   const propertyData = {
     owner: userId,
     type: formData.get('type'),
@@ -60,13 +53,33 @@ export async function addProperty(formData: FormData) {
       email: formData.get('seller_info.email'),
       phone: formData.get('seller_info.phone'),
     },
-    images,
+    images: [] as string[],
   };
+
+  const imageUrls = [];
+
+  for (const imageFile of images as File[]) {
+    const imageBuffer = await imageFile.arrayBuffer();
+    const imageArray = Array.from(new Uint8Array(imageBuffer));
+    const imageData = Buffer.from(imageArray);
+
+    // convert image to base64
+    const imageBase64 = imageData.toString('base64');
+
+    // upload to cloudinary
+    const result = await cloudinary.uploader.upload(
+      `data:image/png;base64,${imageBase64}`,
+      {
+        folder: 'propertypulse',
+      }
+    );
+    imageUrls.push(result.secure_url);
+  }
+  propertyData.images = imageUrls;
 
   const newProperty = new Property(propertyData);
   await newProperty.save();
-  console.log('newProperty: ', newProperty);
-  console.log('rates: ', newProperty.rates);
+  // console.log('newProperty: ', newProperty);
   revalidatePath('/', 'layout');
   redirect(`/properties/${newProperty._id}`);
 }
