@@ -3,13 +3,21 @@ import PropertyHeaderImage from '@/components/PropertyHeaderImage';
 import PropertyImages from '@/components/PropertyImages';
 import connectDb from '@/config/database';
 import Property, { type IProperty } from '@/models/Property';
+import { convertToObject } from '@/utils/convertToObject';
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
 const PropertyPage = async ({ params }: { params: { id: string } }) => {
   await connectDb();
-  const property: IProperty = (await Property.findById(
-    params.id
-  ).lean()) as IProperty;
+  const propertyDocs = await Property.findById(params.id).lean();
+  const property = convertToObject(propertyDocs) as IProperty;
+
+  if (!property) {
+    return (
+      <h1 className='text-center text-2xl font-bold mt-10'>
+        Property not found
+      </h1>
+    );
+  }
 
   return (
     <>
@@ -32,7 +40,6 @@ const PropertyPage = async ({ params }: { params: { id: string } }) => {
         </div>
       </section>
       <PropertyImages images={property.images} />
-
     </>
   );
 };

@@ -4,6 +4,7 @@ import Property, { IProperty } from '@/models/Property';
 import { getSessionUser } from '@/utils/getSessionUser';
 import profileDefault from '@/assets/images/profile.png';
 import ProfileProperties from '@/components/ProfileProperties';
+import { convertToObject } from '@/utils/convertToObject';
 
 const ProfilePage = async () => {
   await connectDB();
@@ -15,8 +16,10 @@ const ProfilePage = async () => {
   if (!userId) {
     throw new Error('User not found');
   }
-  const properties = await Property.find({ owner: userId }).lean();
-
+  const propertiesDocs = await Property.find({ owner: userId }).lean();
+  // Convert lean documents to plain objects
+  // removes error when passing props to client component
+  const properties = propertiesDocs.map((doc) => convertToObject(doc));
   return (
     <section className='bg-blue-50'>
       <div className='container m-auto py-24'>
