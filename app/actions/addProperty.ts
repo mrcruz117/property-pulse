@@ -6,6 +6,7 @@ import { getSessionUser } from '@/utils/getSessionUser';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import cloudinary from '@/config/cloudinary.js';
+
 type Image = {
   name: string;
   type: string;

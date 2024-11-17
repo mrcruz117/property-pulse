@@ -3,6 +3,7 @@ import { deleteProperty } from '@/app/actions/deleteProperty';
 import { Property } from '@/types/property';
 import Image from 'next/image';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 import { useState } from 'react';
 
 const ProfileProperties = ({
@@ -13,6 +14,7 @@ const ProfileProperties = ({
   const [properties, setProperties] = useState<Property[]>(initialProperties);
 
   const handleDeleteProperty = async (propertyId: string) => {
+    toast.info('Deleting property...');
     const confirmed = confirm('Are you sure you want to delete this property?');
     if (!confirmed) {
       return;
@@ -22,6 +24,7 @@ const ProfileProperties = ({
       (property) => property._id !== propertyId
     );
     setProperties(updatedProperties);
+    toast.success('Property deleted successfully');
   };
 
   return properties.map((property) => (

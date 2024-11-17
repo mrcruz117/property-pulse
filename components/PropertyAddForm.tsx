@@ -1,8 +1,20 @@
-import { addProperty } from "@/app/actions/addProperty";
+'use client';
+import { addProperty } from '@/app/actions/addProperty';
+import { toast } from 'react-toastify';
 
 const PropertyAddForm = () => {
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      toast.info('Adding property...');
+      await addProperty(formData);
+      toast.success('Property added successfully');
+    } catch (error) {
+      toast.error('Error adding property');
+    }
+  };
+
   return (
-    <form action={addProperty}>
+    <form action={handleSubmit}>
       <h2 className='text-3xl text-center font-semibold mb-6'>Add Property</h2>
 
       <div className='mb-4'>
