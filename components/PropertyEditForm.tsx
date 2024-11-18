@@ -1,8 +1,21 @@
+'use client';
+
 import { updateProperty } from '@/app/actions/updateProperty';
 import { IProperty } from '@/models/Property';
+import { toast } from 'react-toastify';
 
 const PropertyEditForm = ({ property }: { property: IProperty }) => {
-  const handleUpdateById = updateProperty.bind(null, property._id);
+  // TODO: add toast notifications
+
+  const handleUpdateById = async (formData: FormData) => {
+    toast.info('Updating property...');
+    try {
+      await updateProperty(property._id, formData);
+      toast.success('Property updated successfully');
+    } catch (error) {
+      toast.error('Failed to update property');
+    }
+  };
   return (
     <form action={handleUpdateById}>
       <h2 className='text-3xl text-center font-semibold mb-6'>Edit Property</h2>
