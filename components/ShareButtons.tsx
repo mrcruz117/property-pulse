@@ -1,11 +1,47 @@
+'use client';
+
 import { IProperty } from '@/models/Property';
 import { FaShare } from 'react-icons/fa';
+import {
+  FacebookShareButton,
+  EmailShareButton,
+  TwitterShareButton,
+
+  // icons
+  FacebookIcon,
+  XIcon,
+  EmailIcon,
+} from 'react-share';
 
 const ShareButtons = ({ property }: { property: IProperty }) => {
+  const url = `${process.env.NEXT_PUBLIC_DOMAIN}/properties/${property._id}`;
+
   return (
-    <button className='bg-orange-500 hover:bg-orange-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center'>
-      <FaShare className='mr-2'></FaShare> Share Property
-    </button>
+    <>
+      <h3 className='text-xl text-center pt-2'>Share this Property:</h3>
+      <div className='flex gap-3 justify-center pb-5'>
+        <FacebookShareButton
+          url={url}
+          hashtag={`#${property.type.trim()}ForRent`}
+        >
+          <FacebookIcon size={40} round={true} />
+        </FacebookShareButton>
+        <TwitterShareButton
+          url={url}
+          title={property.name}
+          hashtags={['#rent', '#realestate']}
+        >
+          <XIcon size={40} round={true} />
+        </TwitterShareButton>
+        <EmailShareButton
+          url={url}
+          subject={property.name}
+          body={`Check out this property: ${property.name} - ${url}`}
+        >
+          <EmailIcon size={40} round={true} />
+        </EmailShareButton>
+      </div>
+    </>
   );
 };
 
