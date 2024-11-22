@@ -25,16 +25,16 @@ export async function bookmarkProperty(propertyId: string) {
   if (isBookmarked) {
     // remove if bookmarked
     user.bookmarks.pull(propertyId);
-    message = 'Property removed from bookmarks';
+    message = 'Bookmark removed!';
     isBookmarked = false;
   } else {
     // if not then add
     user.bookmarks.push(propertyId);
-    message = 'Property added to bookmarks';
+    message = 'Property bookmarked!';
     isBookmarked = true;
   }
 
   await user.save();
   revalidatePath('/properties/saved', 'page');
-  return { message, isBookmarked };
+  return { message, isBookmarked, };
 }
