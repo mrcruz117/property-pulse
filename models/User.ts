@@ -9,7 +9,7 @@ const UserSchema = new Schema(
     },
     username: { type: String, required: true },
     image: { type: String },
-    bookmarks: [{ type: Schema.Types.ObjectId, ref: 'property' }],
+    bookmarks: [{ type: Schema.Types.ObjectId, ref: 'Property' }],
   },
   { timestamps: true }
 );
