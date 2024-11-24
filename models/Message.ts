@@ -19,12 +19,16 @@ const Message = models.Message || model('Message', MessageSchema);
 export interface IMessage {
   sender: string;
   recipient: string;
-  property: string;
+  property: {
+    _id: string;
+    name: string;
+  };
   name: string;
   email: string;
   phone: string;
   body: string;
   viewed: boolean;
+  createdAt: string;
 }
 
 export default Message;
