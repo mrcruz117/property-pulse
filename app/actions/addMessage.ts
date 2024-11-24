@@ -9,7 +9,7 @@ export async function addMessage(formData: FormData) {
   const sessionUser = await getSessionUser();
 
   if (!sessionUser) {
-    throw new Error('User not authenticated');
+    return { success: false, error: 'User not authenticated' };
   }
 
   const { user } = sessionUser;
@@ -18,7 +18,7 @@ export async function addMessage(formData: FormData) {
   const recipient = formData.get('recipient');
 
   if (userId === recipient) {
-    throw new Error('You cannot send a message to yourself');
+    return { success: false, error: 'You cannot send a message to yourself' };
   }
   const newMessage = new Message({
     sender: userId,
