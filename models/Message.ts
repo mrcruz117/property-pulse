@@ -17,6 +17,7 @@ const MessageSchema = new Schema(
 const Message = models.Message || model('Message', MessageSchema);
 
 export interface IMessage {
+  _id: string;
   sender: string;
   recipient: string;
   property: {
