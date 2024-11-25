@@ -1,5 +1,6 @@
 'use client';
 
+import { deleteMessage } from '@/app/actions/deleteMessage';
 import { markMessageRead } from '@/app/actions/markMessageRead';
 import { IMessage } from '@/models/Message';
 import { useState } from 'react';
@@ -7,6 +8,30 @@ import { toast } from 'react-toastify';
 
 const MessageCard = ({ msg }: { msg: IMessage }) => {
   const [viewed, setViewed] = useState(msg.viewed);
+  const [isDeleted, setIsDeleted] = useState(false);
+
+  const handleMarkAsRead = async () => {
+    try {
+      const newViewed = await markMessageRead(msg._id);
+      setViewed(newViewed);
+      toast.success(newViewed ? 'Marked as unread' : 'Marked as read');
+    } catch (error) {
+      toast.error('Failed to mark as read');
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirm = window.confirm('Are you sure you want to delete this message?');
+    if (!confirm) return;
+    try {
+      await deleteMessage(msg._id);
+      toast.success('Message deleted');
+      setIsDeleted(true);
+    } catch (error) {
+      toast.error('Failed to delete message');
+    }
+  };
+  if (isDeleted) return <p>Message deleted</p>;
   return (
     <div className='relative bg-white p-4 rounded-md shadow-md border border-gray-200'>
       {!viewed && (
@@ -41,15 +66,14 @@ const MessageCard = ({ msg }: { msg: IMessage }) => {
       </ul>
       <button
         className='mt-4 mr-3 bg-blue-500 text-white py-1 px-3 rounded-md'
-        onClick={async () => {
-          const newViewed = await markMessageRead(msg._id);
-          setViewed(newViewed);
-          toast.success(newViewed ? 'Marked as unread' : 'Marked as read');
-        }}
+        onClick={handleMarkAsRead}
       >
         {viewed ? 'Mark as unread' : 'Mark as read'}
       </button>
-      <button className='mt-4 bg-red-500 text-white py-1 px-3 rounded-md'>
+      <button
+        className='mt-4 bg-red-500 text-white py-1 px-3 rounded-md'
+        onClick={handleDelete}
+      >
         Delete
       </button>
     </div>
