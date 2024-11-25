@@ -3,6 +3,7 @@
 import { deleteMessage } from '@/app/actions/deleteMessage';
 import { markMessageRead } from '@/app/actions/markMessageRead';
 import { IMessage } from '@/models/Message';
+import { useMsgStore } from '@/providers/msg-store-provider';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -10,18 +11,27 @@ const MessageCard = ({ msg }: { msg: IMessage }) => {
   const [viewed, setViewed] = useState(msg.viewed);
   const [isDeleted, setIsDeleted] = useState(false);
 
+  const { unreadCount, setUnreadCount } = useMsgStore((state) => state);
+
   const handleMarkAsRead = async () => {
     try {
       const newViewed = await markMessageRead(msg._id);
       setViewed(newViewed);
       toast.success(newViewed ? 'Marked as unread' : 'Marked as read');
+      if (newViewed) {
+        setUnreadCount(unreadCount - 1);
+      } else {
+        setUnreadCount(unreadCount + 1);
+      }
     } catch (error) {
       toast.error('Failed to mark as read');
     }
   };
 
   const handleDelete = async () => {
-    const confirm = window.confirm('Are you sure you want to delete this message?');
+    const confirm = window.confirm(
+      'Are you sure you want to delete this message?'
+    );
     if (!confirm) return;
     try {
       await deleteMessage(msg._id);
