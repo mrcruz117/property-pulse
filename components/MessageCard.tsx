@@ -35,6 +35,9 @@ const MessageCard = ({ msg }: { msg: IMessage }) => {
     if (!confirm) return;
     try {
       await deleteMessage(msg._id);
+      if (viewed) {
+        setUnreadCount(unreadCount - 1);
+      }
       toast.success('Message deleted');
       setIsDeleted(true);
     } catch (error) {
