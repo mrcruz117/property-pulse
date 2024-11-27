@@ -2,13 +2,21 @@ import PropertyCard from '@/components/PropertyCard';
 import connectDb from '@/config/database';
 import Property, { type IProperty } from '@/models/Property';
 
-const PropertiesPage = async () => {
+const PropertiesPage = async ({
+  searchParams: { page = 1, pageSize = 3 },
+}: {
+  searchParams: { page: number; pageSize: number };
+}) => {
   await connectDb();
   // lean method is used to convert the mongoose document to a plain JavaScript object
   // works well for read-only operations
-  const properties: IProperty[] = (await Property.find(
-    {}
-  ).lean()) as IProperty[];
+  const skip = (page - 1) * pageSize;
+  const totalPages = await Property.countDocuments({});
+
+  const properties: IProperty[] = (await Property.find({})
+    .skip(skip)
+    .limit(pageSize)
+    .lean()) as IProperty[];
 
   return (
     <section className='px-4 py-6'>
