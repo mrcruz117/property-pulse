@@ -4,7 +4,7 @@ import connectDb from '@/config/database';
 import Property, { type IProperty } from '@/models/Property';
 
 const PropertiesPage = async ({
-  searchParams: { page = '1', pageSize = '10' },
+  searchParams: { page = '1', pageSize = '6' },
 }: {
   searchParams: { page: string; pageSize: string };
 }) => {
