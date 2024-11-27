@@ -1,21 +1,22 @@
+import Pagination from '@/components/Pagination';
 import PropertyCard from '@/components/PropertyCard';
 import connectDb from '@/config/database';
 import Property, { type IProperty } from '@/models/Property';
 
 const PropertiesPage = async ({
-  searchParams: { page = 1, pageSize = 3 },
+  searchParams: { page = '1', pageSize = '3' },
 }: {
-  searchParams: { page: number; pageSize: number };
+  searchParams: { page: string; pageSize: string };
 }) => {
   await connectDb();
   // lean method is used to convert the mongoose document to a plain JavaScript object
   // works well for read-only operations
-  const skip = (page - 1) * pageSize;
-  const totalPages = await Property.countDocuments({});
+  const skip = (parseInt(page) - 1) * parseInt(pageSize);
+  const totalItems = await Property.countDocuments({});
 
   const properties: IProperty[] = (await Property.find({})
     .skip(skip)
-    .limit(pageSize)
+    .limit(parseInt(pageSize))
     .lean()) as IProperty[];
 
   return (
@@ -30,6 +31,11 @@ const PropertiesPage = async ({
             ))}
           </div>
         )}
+        <Pagination
+          page={parseInt(page)}
+          pageSize={parseInt(pageSize)}
+          totalItems={totalItems}
+        />
       </div>
     </section>
   );
