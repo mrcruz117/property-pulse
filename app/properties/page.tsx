@@ -4,7 +4,7 @@ import connectDb from '@/config/database';
 import Property, { type IProperty } from '@/models/Property';
 
 const PropertiesPage = async ({
-  searchParams: { page = '1', pageSize = '3' },
+  searchParams: { page = '1', pageSize = '10' },
 }: {
   searchParams: { page: string; pageSize: string };
 }) => {
@@ -13,6 +13,8 @@ const PropertiesPage = async ({
   // works well for read-only operations
   const skip = (parseInt(page) - 1) * parseInt(pageSize);
   const totalItems = await Property.countDocuments({});
+
+  const showPagination = totalItems > parseInt(pageSize);
 
   const properties: IProperty[] = (await Property.find({})
     .skip(skip)
@@ -31,11 +33,13 @@ const PropertiesPage = async ({
             ))}
           </div>
         )}
-        <Pagination
-          page={parseInt(page)}
-          pageSize={parseInt(pageSize)}
-          totalItems={totalItems}
-        />
+        {showPagination && (
+          <Pagination
+            page={parseInt(page)}
+            pageSize={parseInt(pageSize)}
+            totalItems={totalItems}
+          />
+        )}
       </div>
     </section>
   );
